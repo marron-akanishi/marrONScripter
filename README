@@ -1,0 +1,38 @@
+marrONScripter
+
+0. はじめに
+
+	Ogappe氏作の ONScripter を赤西真論が独自に改造したスクリプトエンジンです。
+	本家同様に高橋直樹氏作の NScripter 用に作成されたスクリプトを独自に解釈して実行します。
+	また、独自機能を追加しています。
+
+1. 開発・実行環境
+
+	ライブラリとしては基本的には SDL-2.0.4, SDL_image-2.0.1, SDL_mixer-2.0.1, SDL_ttf-2.0.14, SMPEG-2.0.0 が必要です。
+	(これらのライブラリの依存関係のあるライブラリも必要になります。)
+	自前コンパイルせずにバイナリパッケージのみ使用する場合は必要ありません。
+	基本的には Windows 10 Pro 上の Visual Studio 2015 Community or Bash on Ubuntu on Linux + g++ で開発しています。
+	Mac版とiOS版に関しては Xcode 7.3.1 で開発しています。
+	Windows 10 , OSX (MacBook Pro Early 2015), Android5.1.1 (Xperia Z1), iOS 9.3.2 (iPhone 5s) 上で動作確認をしています。
+
+2. 起動方法
+
+	起動方法は以下の通りです。
+
+	まず、monster(.exe), default.ttf, スクリプト, アーカイブを同じフォルダー内に置いておきます。
+	対応のスクリプトは 0.txt, nscript.dat, nscr_sec.dat, nscript.___ です。
+	対応のアーカイブは arc.sar, arc.nsa, arc.ns2 です。
+
+	次に実行ファイルである monster(.exe) を実行します。
+
+	これで起動します。
+
+3. コンパイル方法
+
+	コンパイル方法はHPを確認してください → https://sites.google.com/site/marrononscripter/howtouse
+
+4. 連絡先
+
+	本ソフトウェアに関する問い合わせは
+	Twitter上で @marron_general にリプ・DMを送るか、
+	marron.general@gmail.com にメールを送って下さい。
