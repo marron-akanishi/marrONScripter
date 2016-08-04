@@ -1,2 +1,2 @@
-#define ONS_VERSION "20150820"
+#define ONS_VERSION "0.01"
 #define NSC_VERSION 296

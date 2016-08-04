@@ -42,7 +42,7 @@ extern "C" void waveCallback( int channel );
 #define SPACE_BOTTOM_FILE "space_bottom.png"
 #define REGISTRY_FILE "registry.txt"
 #define DLL_FILE "dll.txt"
-#define DEFAULT_ENV_FONT "Ôº≠Ôº≥ „Ç¥„Ç∑„ÉÉ„ÇØ"
+#define DEFAULT_ENV_FONT "ÇlÇrÅ@ÉSÉVÉbÉN"
 #define DEFAULT_AUTOMODE_TIME 1000
 
 void ONScripter::initSDL(){
@@ -77,14 +77,14 @@ void ONScripter::initSDL(){
     SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 
-#if define(WIN32)
+#if defined(WIN32)
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 #else
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 #endif
     
-#if define(ALLOW_HIGHDPI)
-#if define(IOS)
+#if defined(ALLOW_HIGHDPI)
+#if defined(IOS)
     window = SDL_CreateWindow(NULL, 0, 0, 0, 0, SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI|SDL_WINDOW_SHOWN|SDL_WINDOW_BORDERLESS);
 #else
     window = SDL_CreateWindow(DEFAULT_WM_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height,

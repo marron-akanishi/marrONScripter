@@ -63,8 +63,10 @@ void optionHelp()
 
 void optionVersion()
 {
-    printf("Written by Ogapee <ogapee@aqua.dti2.ne.jp>\n\n");
+    printf("Written by Ogapee <ogapee@aqua.dti2.ne.jp>\n");
     printf("Copyright (c) 2001-2014 Ogapee.\n");
+    printf("Customized by Marron Akanishi <marron_general@gmail.com>\n");
+    printf("Copyright (c) 2016 Marron Akanishi.\n");
     printf("This is free software; see the source for copying conditions.\n");
     exit(0);
 }
@@ -111,7 +113,7 @@ int SDL_main( int argc, char **argv )
 int main( int argc, char **argv )
 #endif
 {
-    printf("ONScripter version %s(%d.%02d)\n", ONS_VERSION, NSC_VERSION/100, NSC_VERSION%100 );
+    printf("marrONScripter version %s(%d.%02d)\n", ONS_VERSION, NSC_VERSION/100, NSC_VERSION%100 );
 
 
 #if defined(ANDROID) 
