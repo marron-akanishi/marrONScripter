@@ -105,6 +105,9 @@ void ONScripter::initSDL(){
         exit(-1);
     }
 
+    //scrren_* -> real game size
+    //device_* -> device size
+    //screen_device_* -> device size - space
     SDL_GetRendererOutputSize(renderer, &device_width, &device_height);
     printf("Device: %d x %d\n", device_width, device_height);
     screen_device_width = device_width;
@@ -143,14 +146,6 @@ void ONScripter::initSDL(){
     SDL_RenderClear(renderer);
 
     underline_value = script_h.screen_height;
-
-/*#ifndef USE_SDL_RENDERER
-    if ( screen_surface == NULL ) {
-        fprintf( stderr, "Couldn't set %dx%dx%d video mode: %s\n",
-                 screen_width, screen_height, screen_bpp, SDL_GetError() );
-        exit(-1);
-    }
-#endif*/
 
     printf("Display: %d x %d (%d bpp)\n", screen_width, screen_height, screen_bpp);
     dirty_rect.setDimension(screen_width, screen_height);
@@ -296,11 +291,7 @@ void ONScripter::disableRescale()
 
 void ONScripter::renderFontOutline()
 {
-#if (SDL_TTF_MAJOR_VERSION>=2) && (SDL_TTF_MINOR_VERSION>=0) && (SDL_TTF_PATCHLEVEL>=10)
     render_font_outline = true;
-#else
-    fprintf(stderr, "--render-font-outline is not supported with SDL_ttf %d.%d.%d\n", SDL_TTF_MAJOR_VERSION, SDL_TTF_MINOR_VERSION, SDL_TTF_PATCHLEVEL);
-#endif
 }
 
 void ONScripter::enableEdit()

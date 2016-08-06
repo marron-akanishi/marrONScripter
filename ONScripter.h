@@ -496,6 +496,7 @@ private:
     bool trapHandler();
     bool mouseMoveEvent( SDL_MouseMotionEvent *event );
     bool mousePressEvent( SDL_MouseButtonEvent *event );
+    bool mouseWheelEvent( SDL_MouseWheelEvent *event );
     void variableEditMode( SDL_KeyboardEvent *event );
     void shiftCursorOnButton( int diff );
     bool keyDownEvent( SDL_KeyboardEvent *event );
