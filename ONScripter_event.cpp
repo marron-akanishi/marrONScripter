@@ -347,7 +347,7 @@ bool ONScripter::mouseMoveEvent( SDL_MouseMotionEvent *event )
         }
     }
 #endif
-    printf("Move: %i x %i\n",current_button_state.x,current_button_state.y);
+    //printf("Move: %i x %i\n",current_button_state.x,current_button_state.y);
     if ( event_mode & WAIT_BUTTON_MODE ){
         mouseOverCheck( current_button_state.x, current_button_state.y );
         if (getmouseover_flag &&
@@ -1174,7 +1174,7 @@ void ONScripter::runEventLoop()
             break;
                 
           case SDL_MOUSEWHEEL:
-            mouseWheelEvent( &event )
+			mouseWheelEvent( &event.wheel );
             break;
 #endif
                 
@@ -1272,7 +1272,7 @@ void ONScripter::runEventLoop()
                 switch (event.window.event) {
                     case SDL_WINDOWEVENT_SHOWN:
                     case SDL_WINDOWEVENT_EXPOSED:
-                        SDL_RenderPresent(renderer);
+						repaintCommand();
                         break;
                     case SDL_WINDOWEVENT_LEAVE:
                         SDL_MouseMotionEvent mevent;

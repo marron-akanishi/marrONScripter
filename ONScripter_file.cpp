@@ -30,6 +30,7 @@
 #include <time.h>
 #elif defined(WIN32)
 #include <windows.h>
+#include <atlconv.h>
 #endif
 
 #define SAVEFILE_MAGIC_NUMBER "ONS"
@@ -63,7 +64,8 @@ void ONScripter::searchSaveFile( SaveFileInfo &save_file_info, int no )
     HANDLE  handle;
     FILETIME    tm, ltm;
     SYSTEMTIME  stm;
-    handle = CreateFile( file_name, GENERIC_READ, 0, NULL,
+	USES_CONVERSION;
+    handle = CreateFile( A2W(file_name), GENERIC_READ, 0, NULL,
                          OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
     if ( handle == INVALID_HANDLE_VALUE ){
         save_file_info.valid = false;

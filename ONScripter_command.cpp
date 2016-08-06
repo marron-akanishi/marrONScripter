@@ -963,7 +963,7 @@ int ONScripter::savescreenshotCommand()
     resizeSurface( screenshot_surface, surface );
     
     const char *buf = script_h.readStr();
-    FILE *fp = fopen(buf, "wb");
+    FILE *fp = ::fopen(buf, "wb");
     SDL_RWops *rwops = SDL_RWFromFP(fp, SDL_TRUE);
     SDL_SaveBMP_RW(surface, rwops, 1);
     SDL_FreeSurface(surface);
@@ -1575,11 +1575,13 @@ int ONScripter::menu_windowCommand()
 
 int ONScripter::menu_fullCommand()
 {
+#if !defined(ANDROID) && !defined(IOS)
     if ( !fullscreen_mode ){
         if ( SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP) == 0 ){
             fullscreen_mode = true;
         }
     }
+#endif
 
     return RET_CONTINUE;
 }

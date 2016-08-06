@@ -82,6 +82,11 @@ void ONScripter::initSDL(){
 #else
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 #endif
+
+#if !defined(IOS) && !defined(ANDROID)
+	SDL_GetDisplayMode(0, 0, &display_info);
+	printf("Display: %d x %d \n", display_info.w, display_info.h);
+#endif
     
 #if defined(ALLOW_HIGHDPI)
 #if defined(IOS)
@@ -91,8 +96,12 @@ void ONScripter::initSDL(){
         SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI|SDL_WINDOW_SHOWN|(fullscreen_mode?SDL_WINDOW_FULLSCREEN_DESKTOP:0));
 #endif //IOS
 #else
+#if defined(ANDROID)
+	window = SDL_CreateWindow(NULL, 0, 0, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
+#else
     window = SDL_CreateWindow(DEFAULT_WM_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height,
         SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN|(fullscreen_mode?SDL_WINDOW_FULLSCREEN_DESKTOP:0));
+#endif //ANDROID
 #endif //ALLOW_HIGHDPI
 
     if ( window == NULL ) {
@@ -147,12 +156,15 @@ void ONScripter::initSDL(){
 
     underline_value = script_h.screen_height;
 
-    printf("Display: %d x %d (%d bpp)\n", screen_width, screen_height, screen_bpp);
+    printf("Screen: %d x %d \n", screen_width, screen_height);
     dirty_rect.setDimension(screen_width, screen_height);
     
     screen_rect.x = screen_rect.y = 0;
     screen_rect.w = screen_width;
     screen_rect.h = screen_height;
+#if !defined(IOS)
+	SDL_RenderSetLogicalSize(renderer, screen_width, screen_height);
+#endif //IOS
 
     initSJIS2UTF16();
     

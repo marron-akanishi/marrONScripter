@@ -122,9 +122,24 @@ extern "C" void playVideoIOS(const char *filename, bool click_flag, bool loop_fl
 
 #if defined(USE_SMPEG)
 #include <smpeg.h>
+
+typedef struct {
+	SMPEG_Frame *frame;
+	int frameCount;
+	SDL_mutex *lock;
+} update_context;
+
+update_context context;
+int frameCount = 0;
+
 extern "C" void mp3callback( void *userdata, Uint8 *stream, int len )
 {
     SMPEG_playAudio( (SMPEG*)userdata, stream, len );
+}
+
+void update(void *data, SMPEG_Frame *frame) {
+	context.frame = frame;
+	++context.frameCount;
 }
 #endif
 
@@ -302,10 +317,16 @@ int ONScripter::playMPEG(const char *filename, bool click_flag, bool loop_flag)
     int ret = 0;
 #if defined(USE_SMPEG)
     unsigned char *mpeg_buffer = new unsigned char[length];
-    script_h.cBR->getFile( filename, mpeg_buffer );
-    SMPEG *mpeg_sample = SMPEG_new_rwops( SDL_RWFromMem( mpeg_buffer, length ), NULL, 0 );
+	SDL_Texture *mpeg_texture;
+	SMPEG_Info mpeg_info;
+	context.lock = SDL_CreateMutex();
+	context.frameCount = 0;
 
-    if ( !SMPEG_error( mpeg_sample ) ){
+    script_h.cBR->getFile( filename, mpeg_buffer );
+    SMPEG *mpeg_sample = SMPEG_new_rwops( SDL_RWFromMem( mpeg_buffer, length ), &mpeg_info, 0 , 0);
+
+    if ( SMPEG_error( mpeg_sample ) == NULL ){
+		mpeg_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, mpeg_info.width, mpeg_info.height);
         SMPEG_enableaudio( mpeg_sample, 0 );
 
         if ( audio_open_flag ){
@@ -313,12 +334,12 @@ int ONScripter::playMPEG(const char *filename, bool click_flag, bool loop_flag)
             SMPEG_enableaudio( mpeg_sample, 1 );
         }
         SMPEG_enablevideo( mpeg_sample, 1 );
-        SMPEG_setdisplay( mpeg_sample, screen_surface, NULL, NULL );
+        SMPEG_setdisplay( mpeg_sample, update, &context, context.lock );
         SMPEG_setvolume( mpeg_sample, music_volume );
         SMPEG_loop(mpeg_sample, loop_flag);
 
         Mix_HookMusic( mp3callback, mpeg_sample );
-        SMPEG_play( mpeg_sample );
+		SMPEG_play(mpeg_sample);
 
         bool done_flag = false;
         while( !(done_flag & click_flag) && SMPEG_status(mpeg_sample) == SMPEG_PLAYING ){
@@ -338,7 +359,8 @@ int ONScripter::playMPEG(const char *filename, bool click_flag, bool loop_flag)
                         ctrl_pressed_status &= ~0x02;
                     break;
                   case SDL_QUIT:
-                    ret = 1;
+					endCommand();
+					break;
                   case SDL_MOUSEBUTTONUP:
                     done_flag = true;
                     break;
@@ -346,12 +368,34 @@ int ONScripter::playMPEG(const char *filename, bool click_flag, bool loop_flag)
                     break;
                 }
             }
+			SDL_Rect src, dst;
+
+			SDL_LockMutex(context.lock);
+			if (context.frame == nullptr) {
+				printf("Load MPEG video failed\n");
+				break;
+			}
+			if (context.frame == nullptr) break;
+			SDL_UpdateTexture(mpeg_texture, NULL, context.frame->image, context.frame->image_width);
+			frameCount = context.frameCount;
+			SDL_UnlockMutex(context.lock);
+
+			src.x = dst.x = 0;
+			src.y = dst.y = 0;
+			src.w = mpeg_info.width;
+			src.h = mpeg_info.height;
+			dst.w = screen_width;
+			dst.h = screen_height;
+			SDL_RenderCopy(renderer, mpeg_texture, &src, &dst);
+
+			SDL_RenderPresent(renderer);
             SDL_Delay( 10 );
         }
 
         SMPEG_stop( mpeg_sample );
         Mix_HookMusic( NULL, NULL );
         SMPEG_delete( mpeg_sample );
+		SDL_DestroyMutex(context.lock);
 
     }
     delete[] mpeg_buffer;

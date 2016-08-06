@@ -310,6 +310,7 @@ private:
     char *wm_title_string;
     char *wm_icon_string;
     char wm_edit_string[256];
+	SDL_DisplayMode display_info;
     bool fullscreen_mode;
     bool window_mode;
 
