@@ -11,7 +11,7 @@ marrONScripter
 	ライブラリとしては基本的には SDL-2.0.4, SDL_image-2.0.1, SDL_mixer-2.0.1, SDL_ttf-2.0.14, SMPEG-2.0.0 が必要です。
 	(これらのライブラリの依存関係のあるライブラリも必要になります。)
 	自前コンパイルせずにバイナリパッケージのみ使用する場合は必要ありません。
-	基本的には Windows 10 Pro 上の Visual Studio 2015 Community or Bash on Ubuntu on Linux + g++ で開発しています。
+	基本的には Windows 10 Pro 上の Visual Studio 2015 Community で開発しています。
 	Mac版とiOS版に関しては Xcode 7.3.1 で開発しています。
 	Windows 10 , OSX (MacBook Pro Early 2015), Android5.1.1 (Xperia Z1), iOS 9.3.2 (iPhone 5s) 上で動作確認をしています。
 
