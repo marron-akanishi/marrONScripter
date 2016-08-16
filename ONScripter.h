@@ -327,6 +327,7 @@ private:
     char *key_exe_file;
 
     // variables relevant to button
+    int cursor_x, cursor_y;
     ButtonState current_button_state, last_mouse_state;
     ButtonLink root_button_link, *current_button_link, exbtn_d_button_link;
     bool is_exbtn_enabled;
@@ -540,6 +541,9 @@ private:
 #if defined(IOS)
     SDL_Texture *back_texture[2];
 #endif
+#if defined(TVOS)
+    SDL_Texture *cursor_texture;
+#endif
 
     // format = SDL_PIXELFORMAT_ABGR8888 for OpenGL ES 1.x, OpenGL ES 2.x (Android, iOS)
     // format = SDL_PIXELFORMAT_ARGB8888 for OpenGL, Direct3D (Windows, Linux, MacOSX) or for any 32bit surface without SDL_Renderer
@@ -547,6 +551,9 @@ private:
     Uint32 texture_format;
 #if defined(IOS)
     SDL_Surface *back_surface[2]; //Background image if it has space
+#endif
+#if defined(TVOS)
+    SDL_Surface *cursor_surface; //Cursor image if in tvOS
 #endif
     SDL_Surface *accumulation_surface; // Final image, i.e. picture_surface (+ shadow + text_surface)
     SDL_Surface *backup_surface; // Final image w/o (shadow + text_surface) used in leaveTextDisplayMode()

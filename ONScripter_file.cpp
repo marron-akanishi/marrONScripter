@@ -41,11 +41,17 @@
 
 void ONScripter::searchSaveFile( SaveFileInfo &save_file_info, int no )
 {
-    char file_name[256];
-
+    char *file_name = new char[256];
+    
+    sprintf( file_name, "%ssave%d.dat", save_dir?save_dir:archive_path, no );
+    if(strstr(file_name, SDL_GetBasePath()) == NULL){
+        delete[] file_name;
+        file_name = new char[strlen(SDL_GetBasePath()) + 256];
+        sprintf( file_name, "%s%ssave%d.dat",SDL_GetBasePath() , save_dir?save_dir:archive_path, no );
+    }
+    
     script_h.getStringFromInteger( save_file_info.sjis_no, no, (num_save_file >= 10)?2:1 );
 #if defined(LINUX) || defined(MACOSX) || defined(IOS)
-    sprintf( file_name, "%ssave%d.dat", save_dir?save_dir:archive_path, no );
     struct stat buf;
     struct tm *tm;
     if ( stat( file_name, &buf ) != 0 ){
@@ -60,7 +66,6 @@ void ONScripter::searchSaveFile( SaveFileInfo &save_file_info, int no )
     save_file_info.hour   = tm->tm_hour;
     save_file_info.minute = tm->tm_min;
 #elif defined(WIN32)
-    sprintf( file_name, "%ssave%d.dat", save_dir?save_dir:archive_path, no );
     HANDLE  handle;
     FILETIME    tm, ltm;
     SYSTEMTIME  stm;
@@ -200,4 +205,5 @@ int ONScripter::writeSaveFile( int no, const char *savestr ){
     sprintf( filename, RELATIVEPATH "sav%csave%d.dat", DELIMITER, no );
     if (saveFileIOBuf( filename, magic_len, savestr ))
         fprintf( stderr, "can't open save file %s for writing (not an error)\n", filename );
+    return 0;
 }

@@ -333,6 +333,11 @@ bool ONScripter::trapHandler()
  * **************************************** */
 bool ONScripter::mouseMoveEvent( SDL_MouseMotionEvent *event )
 {
+#if defined(TVOS)
+    cursor_x = event->x;
+    cursor_y = event->y;
+    repaintCommand(); //TODO : Animation is skipped
+#endif
     current_button_state.x = (float)event->x * screen_width / device_width;
     current_button_state.y = (float)event->y * screen_height / device_height;
     //Calc space size
@@ -389,7 +394,7 @@ bool ONScripter::mousePressEvent( SDL_MouseButtonEvent *event )
         }
     }
 #endif
-    printf("Press: %i x %i\n",current_button_state.x,current_button_state.y);
+    //printf("Press: %i x %i\n",current_button_state.x,current_button_state.y);
     current_button_state.down_flag = false;
     skip_mode &= ~SKIP_NORMAL;
 
@@ -453,38 +458,23 @@ bool ONScripter::mousePressEvent( SDL_MouseButtonEvent *event )
 }
 
 bool ONScripter::mouseWheelEvent( SDL_MouseWheelEvent *event ){
-    if(event->direction == SDL_MOUSEWHEEL_NORMAL){
-        if(bexec_flag ||
-           (event_mode & WAIT_TEXT_MODE) || (usewheel_flag && event_mode & WAIT_BUTTON_MODE) ||
-           system_menu_mode == SYSTEM_LOOKBACK){
-            current_button_state.button = -2;
-            if(event->y > 0){
-                sprintf(current_button_state.str, "WHEELUP");
-                if (event_mode & WAIT_TEXT_MODE) system_menu_mode = SYSTEM_LOOKBACK;
-            }else{
-                if (event_mode & WAIT_TEXT_MODE)
-                    current_button_state.button = 0;
-                else
-                    current_button_state.button = -3;
-                sprintf(current_button_state.str, "WHEELDOWN");
-            }
-            return true;
+    //TODO : Fripped mode check
+    if(event->y == 0) return false;
+    if(bexec_flag ||
+       (event_mode & WAIT_TEXT_MODE) || (usewheel_flag && event_mode & WAIT_BUTTON_MODE) ||
+       system_menu_mode == SYSTEM_LOOKBACK){
+        current_button_state.button = -2;
+        if(event->y > 0){
+            sprintf(current_button_state.str, "WHEELUP");
+            if (event_mode & WAIT_TEXT_MODE) system_menu_mode = SYSTEM_LOOKBACK;
+        }else{
+            if (event_mode & WAIT_TEXT_MODE)
+                current_button_state.button = 0;
+            else
+                current_button_state.button = -3;
+            sprintf(current_button_state.str, "WHEELDOWN");
         }
-    }else{
-        if((enable_wheeldown_advance_flag && event_mode & WAIT_TEXT_MODE) || (usewheel_flag && event_mode & WAIT_BUTTON_MODE) ||
-            system_menu_mode == SYSTEM_LOOKBACK ){
-                if(event->y < 0){
-                    sprintf(current_button_state.str, "WHEELUP");
-                    if (event_mode & WAIT_TEXT_MODE) system_menu_mode = SYSTEM_LOOKBACK;
-                }else{
-                    if (event_mode & WAIT_TEXT_MODE)
-                        current_button_state.button = 0;
-                    else
-                        current_button_state.button = -3;
-                    sprintf(current_button_state.str, "WHEELDOWN");
-                }
-                return true;
-        }
+        return true;
     }
     return false;
 }
@@ -672,16 +662,16 @@ bool ONScripter::keyDownEvent( SDL_KeyboardEvent *event )
         current_button_state.event_button = SDL_BUTTON_LEFT;
     }
     else if (event->keysym.sym == SDLK_LEFT){
-        SDL_MouseWheelEvent *w_event;
-        w_event->y = 10;
-        w_event->direction = SDL_MOUSEWHEEL_NORMAL;
-        mouseWheelEvent( w_event );
+        SDL_MouseWheelEvent w_event;
+        w_event.y = 10;
+        w_event.direction = SDL_MOUSEWHEEL_NORMAL;
+        mouseWheelEvent( &w_event );
     }
     else if (event->keysym.sym == SDLK_RIGHT){
-        SDL_MouseWheelEvent *w_event;
-        w_event->y = -10;
-        w_event->direction = SDL_MOUSEWHEEL_NORMAL;
-        mouseWheelEvent( w_event );
+        SDL_MouseWheelEvent w_event;
+        w_event.y = -10;
+        w_event.direction = SDL_MOUSEWHEEL_NORMAL;
+        mouseWheelEvent( &w_event );
     }
 
     switch ( event->keysym.sym ) {
@@ -724,16 +714,16 @@ void ONScripter::keyUpEvent( SDL_KeyboardEvent *event )
         current_button_state.event_button = SDL_BUTTON_LEFT;
     }
     else if (event->keysym.sym == SDLK_LEFT){
-        SDL_MouseWheelEvent *w_event;
-        w_event->y = 10;
-        w_event->direction = SDL_MOUSEWHEEL_NORMAL;
-        mouseWheelEvent( w_event );
+        SDL_MouseWheelEvent w_event;
+        w_event.y = 10;
+        w_event.direction = SDL_MOUSEWHEEL_NORMAL;
+        mouseWheelEvent( &w_event );
     }
     else if (event->keysym.sym == SDLK_RIGHT){
-        SDL_MouseWheelEvent *w_event;
-        w_event->y = -10;
-        w_event->direction = SDL_MOUSEWHEEL_NORMAL;
-        mouseWheelEvent( w_event );
+        SDL_MouseWheelEvent w_event;
+        w_event.y = -10;
+        w_event.direction = SDL_MOUSEWHEEL_NORMAL;
+        mouseWheelEvent( &w_event );
     }
     
     switch ( event->keysym.sym ) {
@@ -1174,10 +1164,11 @@ void ONScripter::runEventLoop()
             break;
                 
           case SDL_MOUSEWHEEL:
-			mouseWheelEvent( &event.wheel );
+			ret = mouseWheelEvent( &event.wheel );
+            if (ret) return;
             break;
 #endif
-                
+#if defined(TVOS)      
           case SDL_JOYBUTTONDOWN:
             event.key.type = SDL_KEYDOWN;
             event.key.keysym.sym = transJoystickButton(event.jbutton.button);
@@ -1221,7 +1212,7 @@ void ONScripter::runEventLoop()
               }
               break;
           }
-
+#endif
           case ONS_TIMER_EVENT:
             timerEvent();
             break;
@@ -1286,6 +1277,9 @@ void ONScripter::runEventLoop()
                 break;
             case SDL_APP_DIDENTERFOREGROUND:
                 repaintCommand();
+                break;
+            case SDL_APP_TERMINATING:
+                endCommand();
                 break;
           case SDL_QUIT:
             endCommand();

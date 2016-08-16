@@ -60,12 +60,11 @@ DirectReader::DirectReader( const char *path, const unsigned char *key_table )
     capital_name_tmp = new char[MAX_FILE_NAME_LENGTH*3+1];
 
     if ( path ){
-        archive_path = new char[ strlen(path) + 1 ];
-        memcpy( archive_path, path, strlen(path) + 1 );
+        archive_path = new char[ strlen(SDL_GetBasePath()) + strlen(path) + 1 ];
+        sprintf( archive_path, "%s%s", SDL_GetBasePath(), path );
     }
     else{
-        archive_path = new char[1];
-        archive_path[0] = 0;
+        archive_path = SDL_GetBasePath();
     }
 
     int i;

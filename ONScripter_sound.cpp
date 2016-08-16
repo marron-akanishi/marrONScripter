@@ -112,7 +112,7 @@ FILE *fopen(const char *path, const char *mode){
 }
 #endif
 
-#if defined(IOS)
+#if defined(IOS) && !defined(TVOS)
 extern "C" void playVideoIOS(const char *filename, bool click_flag, bool loop_flag);
 #endif
 
@@ -306,7 +306,7 @@ int ONScripter::playMPEG(const char *filename, bool click_flag, bool loop_flag)
     return 0;
 #endif
 
-#ifdef IOS
+#if defined(IOS) && !defined(TVOS)
     char *absolute_filename = new char[ strlen(archive_path) + strlen(filename) + 1 ];
     sprintf( absolute_filename, "%s%s", archive_path, filename );
     playVideoIOS(absolute_filename, click_flag, loop_flag);

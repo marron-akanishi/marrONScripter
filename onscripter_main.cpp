@@ -34,9 +34,11 @@ ONScripter ons;
 #import <Foundation/NSArray.h>
 #import <UIKit/UIKit.h>
 #import "DataCopier.h"
-#import "DataDownloader.h"
 #import "ScriptSelector.h"
+#if defined(TVOS)
+#import "DataDownloader.h"
 #import "MoviePlayer.h"
+#endif
 #endif
 
 void optionHelp()
@@ -97,7 +99,7 @@ JAVA_EXPORT_NAME(ONScripter_nativeGetHeight) ( JNIEnv*  env, jobject thiz )
 }
 #endif
 
-#if defined(IOS)
+#if defined(IOS) && !defined(TVOS)
 extern "C" void playVideoIOS(const char *filename, bool click_flag, bool loop_flag)
 {
     NSString *str = [[NSString alloc] initWithUTF8String:filename];

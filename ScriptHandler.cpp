@@ -140,12 +140,21 @@ FILE *ScriptHandler::fopen( const char *path, const char *mode, bool use_save_di
 {
     char *filename;
     if (use_save_dir && save_dir){
-        filename = new char[strlen(save_dir)+strlen(path)+1];
-        sprintf( filename, "%s%s", save_dir, path );
-    }
-    else{
-        filename = new char[strlen(archive_path)+strlen(path)+1];
-        sprintf( filename, "%s%s", archive_path, path );
+        if(strstr(save_dir, SDL_GetBasePath()) != NULL){
+            filename = new char[strlen(save_dir) + strlen(path) + 1];
+            sprintf( filename, "%s%s", save_dir, path );
+        }else{
+            filename = new char[strlen(SDL_GetBasePath()) + strlen(save_dir) + strlen(path) + 1];
+            sprintf( filename, "%s%s%s", SDL_GetBasePath(), save_dir, path );
+        }
+    }else{
+        if(strstr(archive_path, SDL_GetBasePath()) != NULL){
+            filename = new char[strlen(archive_path) + strlen(path) + 1];
+            sprintf( filename, "%s%s", archive_path, path );
+        }else{
+            filename = new char[strlen(SDL_GetBasePath()) + strlen(archive_path) + strlen(path) + 1];
+            sprintf( filename, "%s%s%s", SDL_GetBasePath(), archive_path, path );
+        }
     }
 
     FILE *fp = ::fopen( filename, mode );
@@ -950,7 +959,7 @@ ScriptHandler::VariableData &ScriptHandler::getVariableData(int no)
 int ScriptHandler::readScript( char *path )
 {
     archive_path = new char[strlen(path) + 1];
-    strcpy( archive_path, path );
+    sprintf( archive_path, "%s", path );
 
     FILE *fp = NULL;
     char filename[10];
@@ -970,7 +979,7 @@ int ScriptHandler::readScript( char *path )
     else if ((fp = fopen("nscript.dat", "rb")) != NULL){
         encrypt_mode = 1;
     }
-
+    
     if (fp == NULL){
         fprintf( stderr, "can't open any of 0.txt, 00.txt, nscript.dat and nscript.___\n" );
         return -1;

@@ -40,9 +40,10 @@ extern "C" void waveCallback( int channel );
 #define SPACE_RIGHT_FILE "space_right.png"
 #define SPACE_TOP_FILE "space_top.png"
 #define SPACE_BOTTOM_FILE "space_bottom.png"
+#define CUESOR_FILE "cursor.png"
 #define REGISTRY_FILE "registry.txt"
 #define DLL_FILE "dll.txt"
-#define DEFAULT_ENV_FONT "‚l‚r@ƒSƒVƒbƒN"
+#define DEFAULT_ENV_FONT "ï¿½lï¿½rï¿½@ï¿½Sï¿½Vï¿½bï¿½N"
 #define DEFAULT_AUTOMODE_TIME 1000
 
 void ONScripter::initSDL(){
@@ -82,7 +83,11 @@ void ONScripter::initSDL(){
 #else
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 #endif
-
+    
+#if defined(MACOSX)
+    SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "0");
+#endif
+    
 #if !defined(IOS) && !defined(ANDROID)
 	SDL_GetDisplayMode(0, 0, &display_info);
 	printf("Display: %d x %d \n", display_info.w, display_info.h);
@@ -100,7 +105,7 @@ void ONScripter::initSDL(){
 	window = SDL_CreateWindow(NULL, 0, 0, 0, 0, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
 #else
     window = SDL_CreateWindow(DEFAULT_WM_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height,
-        SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN|(fullscreen_mode?SDL_WINDOW_FULLSCREEN_DESKTOP:0));
+        SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN|(fullscreen_mode?SDL_WINDOW_FULLSCREEN:0));
 #endif //ANDROID
 #endif //ALLOW_HIGHDPI
 
@@ -162,9 +167,10 @@ void ONScripter::initSDL(){
     screen_rect.x = screen_rect.y = 0;
     screen_rect.w = screen_width;
     screen_rect.h = screen_height;
-#if !defined(IOS)
+    
+#if !defined(ALLOW_HIGHDPI)
 	SDL_RenderSetLogicalSize(renderer, screen_width, screen_height);
-#endif //IOS
+#endif //ALLOW_HIGHDPI
 
     initSJIS2UTF16();
     
@@ -261,6 +267,7 @@ void ONScripter::setDLLFile(const char *filename)
     setStr(&dll_file, filename);
 }
 
+//use only in iOS
 void ONScripter::setArchivePath(const char *path)
 {
     if (archive_path) delete[] archive_path;
@@ -268,6 +275,7 @@ void ONScripter::setArchivePath(const char *path)
     sprintf( archive_path, RELATIVEPATH "%s%c", path, DELIMITER );
 }
 
+//use only in iOS
 void ONScripter::setSaveDir(const char *path)
 {
     if (save_dir) delete[] save_dir;
@@ -352,6 +360,7 @@ int ONScripter::init()
         }
     }
 #endif
+    cursor_surface       = AnimationInfo::alloc32bitSurface( 100, 100, texture_format);
     image_surface        = AnimationInfo::alloc32bitSurface( 1, 1, texture_format );
     accumulation_surface = AnimationInfo::allocSurface( screen_width, screen_height, texture_format );
     backup_surface       = AnimationInfo::allocSurface( screen_width, screen_height, texture_format );
@@ -363,12 +372,6 @@ int ONScripter::init()
     screenshot_h = screen_height;
 
     texture = SDL_CreateTextureFromSurface(renderer, accumulation_surface);
-#if defined(IOS)
-    if(resize){
-        back_texture[0] = SDL_CreateTextureFromSurface(renderer, back_surface[0]);
-        back_texture[1] = SDL_CreateTextureFromSurface(renderer, back_surface[1]);
-    }
-#endif
 
     tmp_image_buf = NULL;
     tmp_image_buf_length = 0;
@@ -382,12 +385,12 @@ int ONScripter::init()
     // ----------------------------------------
     // Initialize font
     if ( default_font ){
-        font_file = new char[ strlen(default_font) + 1 ];
-        sprintf( font_file, "%s", default_font );
+        font_file = new char[strlen(SDL_GetBasePath()) + strlen(default_font) + 1 ];
+        sprintf( font_file, "%s%s", SDL_GetBasePath(), default_font );
     }
     else{
-        font_file = new char[ strlen(archive_path) + strlen(FONT_FILE) + 1 ];
-        sprintf( font_file, "%s%s", archive_path, FONT_FILE );
+        font_file = new char[strlen(SDL_GetBasePath()) + strlen(archive_path) + strlen(FONT_FILE) + 1 ];
+        sprintf( font_file, "%s%s%s", SDL_GetBasePath(), archive_path, FONT_FILE );
 #ifdef USE_FONTCONFIG
         FILE *fp = NULL;
         if ((fp = ::fopen(font_file, "rb")) == NULL){
@@ -464,19 +467,26 @@ int ONScripter::init()
     
 #if defined(IOS)
     if(resize){
+        back_texture[0] = SDL_CreateTextureFromSurface(renderer, back_surface[0]);
+        back_texture[1] = SDL_CreateTextureFromSurface(renderer, back_surface[1]);
         if(space_up){
             //0->top 1->bottom
             if((back_surface[0] = loadImage(SPACE_TOP_FILE)) != NULL | (back_surface[1] = loadImage(SPACE_BOTTOM_FILE)) != NULL){
-                SDL_UpdateTexture(back_texture[0], NULL, (unsigned char*)back_surface[0]->pixels, back_surface[0]->pitch);
-                SDL_UpdateTexture(back_texture[1], NULL, (unsigned char*)back_surface[1]->pixels, back_surface[1]->pitch);
+                back_texture[0] = SDL_CreateTextureFromSurface(renderer, back_surface[0]); 
+                back_texture[1] = SDL_CreateTextureFromSurface(renderer, back_surface[1]);
             }
         }else{
             //0->left 1->right
             if((back_surface[0] = loadImage(SPACE_LEFT_FILE)) != NULL | (back_surface[1] = loadImage(SPACE_RIGHT_FILE)) != NULL){
-                SDL_UpdateTexture(back_texture[0], NULL, (unsigned char*)back_surface[0]->pixels, back_surface[0]->pitch);
-                SDL_UpdateTexture(back_texture[1], NULL, (unsigned char*)back_surface[1]->pixels, back_surface[1]->pitch);
+                back_texture[0] = SDL_CreateTextureFromSurface(renderer, back_surface[0]);
+                back_texture[1] = SDL_CreateTextureFromSurface(renderer, back_surface[1]);
             }
         }
+    }
+#endif
+#if defined(TVOS)
+    if((cursor_surface = loadImage(CURSOR_FILE)) != NULL){
+        cursor_texture = SDL_CreateTextureFromSurface(renderer, cursor_surface);
     }
 #endif
     
@@ -646,6 +656,8 @@ void ONScripter::flushDirect( SDL_Rect &rect, int refresh_mode )
 {
     //printf("flush %d: %d %d %d %d\n", refresh_mode, rect.x, rect.y, rect.w, rect.h );
     
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
     refreshSurface( accumulation_surface, &rect, refresh_mode );
     SDL_Rect src_rect = {0, 0, screen_width, screen_height};
     SDL_Rect dst_rect = {0, 0, device_width, device_height};
@@ -691,6 +703,18 @@ void ONScripter::flushDirect( SDL_Rect &rect, int refresh_mode )
         SDL_RenderCopy(renderer, back_texture[0], NULL, &space_rect[0]);
         SDL_RenderCopy(renderer, back_texture[1], NULL, &space_rect[1]);
     }
+#endif
+#if defined(TVOS)
+    SDL_Rect cursor_rect;
+    cursor_rect.x = cursor_x;
+    cursor_rect.y = cursor_y;
+    if(cursor_rect.x < 0) cursor_rect.x = 0;
+    if(cursor_rect.y < 0) cursor_rect.y = 0;
+    if(cursor_rect.x > device_width) cursor_rect.x = device_width;
+    if(cursor_rect.y > device_height) cursor_rect.y = device_height;
+    cursor_rect.w = 100;
+    cursor_rect.h = 100;
+    SDL_RenderCopy(renderer, cursor_texture, NULL, &cursor_rect);
 #endif
     SDL_RenderPresent(renderer);
 }
