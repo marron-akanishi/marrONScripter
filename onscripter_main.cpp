@@ -35,7 +35,7 @@ ONScripter ons;
 #import <UIKit/UIKit.h>
 #import "DataCopier.h"
 #import "ScriptSelector.h"
-#if defined(TVOS)
+#if !defined(TVOS)
 #import "DataDownloader.h"
 #import "MoviePlayer.h"
 #endif

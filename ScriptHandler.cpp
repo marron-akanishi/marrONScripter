@@ -139,6 +139,7 @@ void ScriptHandler::setSaveDir(const char *path)
 FILE *ScriptHandler::fopen( const char *path, const char *mode, bool use_save_dir )
 {
     char *filename;
+#if defined(MACOSX)
     if (use_save_dir && save_dir){
         if(strstr(save_dir, SDL_GetBasePath()) != NULL){
             filename = new char[strlen(save_dir) + strlen(path) + 1];
@@ -156,6 +157,16 @@ FILE *ScriptHandler::fopen( const char *path, const char *mode, bool use_save_di
             sprintf( filename, "%s%s%s", SDL_GetBasePath(), archive_path, path );
         }
     }
+#else
+    if (use_save_dir && save_dir){
+        filename = new char[strlen(save_dir)+strlen(path)+1];
+        sprintf( filename, "%s%s", save_dir, path );
+    }
+    else{
+        filename = new char[strlen(archive_path)+strlen(path)+1];
+        sprintf( filename, "%s%s", archive_path, path );
+    }
+#endif
 
     FILE *fp = ::fopen( filename, mode );
     delete[] filename;

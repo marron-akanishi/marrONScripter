@@ -44,11 +44,13 @@ void ONScripter::searchSaveFile( SaveFileInfo &save_file_info, int no )
     char *file_name = new char[256];
     
     sprintf( file_name, "%ssave%d.dat", save_dir?save_dir:archive_path, no );
+#if defined(MACOSX)
     if(strstr(file_name, SDL_GetBasePath()) == NULL){
         delete[] file_name;
         file_name = new char[strlen(SDL_GetBasePath()) + 256];
         sprintf( file_name, "%s%ssave%d.dat",SDL_GetBasePath() , save_dir?save_dir:archive_path, no );
     }
+#endif
     
     script_h.getStringFromInteger( save_file_info.sjis_no, no, (num_save_file >= 10)?2:1 );
 #if defined(LINUX) || defined(MACOSX) || defined(IOS)

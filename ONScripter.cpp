@@ -40,7 +40,7 @@ extern "C" void waveCallback( int channel );
 #define SPACE_RIGHT_FILE "space_right.png"
 #define SPACE_TOP_FILE "space_top.png"
 #define SPACE_BOTTOM_FILE "space_bottom.png"
-#define CUESOR_FILE "cursor.png"
+#define CURSOR_FILE "cursor.png"
 #define REGISTRY_FILE "registry.txt"
 #define DLL_FILE "dll.txt"
 #define DEFAULT_ENV_FONT "�l�r�@�S�V�b�N"
@@ -360,7 +360,9 @@ int ONScripter::init()
         }
     }
 #endif
+#if defined(TVOS)
     cursor_surface       = AnimationInfo::alloc32bitSurface( 100, 100, texture_format);
+#endif
     image_surface        = AnimationInfo::alloc32bitSurface( 1, 1, texture_format );
     accumulation_surface = AnimationInfo::allocSurface( screen_width, screen_height, texture_format );
     backup_surface       = AnimationInfo::allocSurface( screen_width, screen_height, texture_format );
@@ -385,12 +387,30 @@ int ONScripter::init()
     // ----------------------------------------
     // Initialize font
     if ( default_font ){
-        font_file = new char[strlen(SDL_GetBasePath()) + strlen(default_font) + 1 ];
-        sprintf( font_file, "%s%s", SDL_GetBasePath(), default_font );
+#if defined(MACOSX)
+        if(strstr(default_font, SDL_GetBasePath()) == NULL){
+            font_file = new char[strlen(SDL_GetBasePath()) + strlen(default_font) + 1 ];
+            sprintf( font_file, "%s%s", SDL_GetBasePath(), default_font );
+        }else{
+            font_file = new char[ strlen(default_font) + 1 ];
+            sprintf( font_file, "%s", default_font );
+        }
+    }else{
+        if(strstr(archive_path, SDL_GetBasePath()) == NULL){
+            font_file = new char[strlen(SDL_GetBasePath()) + strlen(archive_path) + strlen(FONT_FILE) + 1 ];
+            sprintf( font_file, "%s%s%s", SDL_GetBasePath(), archive_path, FONT_FILE );
+        }else{
+            font_file = new char[ strlen(archive_path) + strlen(FONT_FILE) + 1 ];
+            sprintf( font_file, "%s%s", archive_path, FONT_FILE );
+        }
+#else
+        font_file = new char[ strlen(default_font) + 1 ];
+        sprintf( font_file, "%s", default_font );
     }
     else{
-        font_file = new char[strlen(SDL_GetBasePath()) + strlen(archive_path) + strlen(FONT_FILE) + 1 ];
-        sprintf( font_file, "%s%s%s", SDL_GetBasePath(), archive_path, FONT_FILE );
+        font_file = new char[ strlen(archive_path) + strlen(FONT_FILE) + 1 ];
+        sprintf( font_file, "%s%s", archive_path, FONT_FILE );
+#endif
 #ifdef USE_FONTCONFIG
         FILE *fp = NULL;
         if ((fp = ::fopen(font_file, "rb")) == NULL){

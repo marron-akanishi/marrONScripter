@@ -705,6 +705,7 @@ ScriptParser::EffectLink *ScriptParser::parseEffect(bool init_flag)
 FILE *ScriptParser::fopen(const char *path, const char *mode, bool use_save_dir)
 {
     char *filename;
+#if defined(MACOSX)
     if (use_save_dir && save_dir){
         if(strstr(save_dir, SDL_GetBasePath()) != NULL){
             filename = new char[strlen(save_dir) + strlen(path) + 1];
@@ -722,6 +723,15 @@ FILE *ScriptParser::fopen(const char *path, const char *mode, bool use_save_dir)
             sprintf( filename, "%s%s%s", SDL_GetBasePath(), archive_path, path );
         }
     }
+#else
+    if (use_save_dir && save_dir){
+        filename = new char[strlen(save_dir) + strlen(path) + 1];
+        sprintf( filename, "%s%s", save_dir, path );
+    }else{
+        filename = new char[strlen(archive_path) + strlen(path) + 1];
+        sprintf( filename, "%s%s", archive_path, path );
+    }
+#endif
     
     for ( unsigned int i=0 ; i<strlen( filename ) ; i++ )
         if ( filename[i] == '/' || filename[i] == '\\' )

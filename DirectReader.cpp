@@ -59,13 +59,29 @@ DirectReader::DirectReader( const char *path, const unsigned char *key_table )
     capital_name = new char[MAX_FILE_NAME_LENGTH*2+1];
     capital_name_tmp = new char[MAX_FILE_NAME_LENGTH*3+1];
 
+#if defined(MACOSX)
     if ( path ){
-        archive_path = new char[ strlen(SDL_GetBasePath()) + strlen(path) + 1 ];
-        sprintf( archive_path, "%s%s", SDL_GetBasePath(), path );
+        if(strstr(path, SDL_GetBasePath()) == NULL){
+            archive_path = new char[ strlen(SDL_GetBasePath()) + strlen(path) + 1 ];
+            sprintf( archive_path, "%s%s", SDL_GetBasePath(), path );
+        }else{
+            archive_path = new char[ strlen(path) + 1 ];
+            sprintf( archive_path, "%s", path );
+        }
     }
     else{
         archive_path = SDL_GetBasePath();
     }
+#else
+    if ( path ){
+        archive_path = new char[ strlen(path) + 1 ];
+        memcpy( archive_path, path, strlen(path) + 1 );
+    }
+    else{
+        archive_path = new char[1];
+        archive_path[0] = 0;
+    }
+#endif
 
     int i;
     if (key_table){
