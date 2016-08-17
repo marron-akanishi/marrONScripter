@@ -127,7 +127,7 @@ void ONScripter::initSDL(){
     screen_device_width = device_width;
     screen_device_height = device_height;
 #if defined(IOS) //For space image
-    if( ((float)device_width / device_height) != ((float)screen_width / screen_height)){
+    if(((float)device_width / device_height) != ((float)screen_width / screen_height))){
         printf("resize on\n");
         resize = true;
         space_up = true;

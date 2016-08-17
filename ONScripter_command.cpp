@@ -2249,7 +2249,42 @@ int ONScripter::getscreenshotCommand()
     screenshot_w = w;
     screenshot_h = h;
     // Renderer size is device size
-    SDL_Rect rect = {0,0,device_width, device_height};
+    SDL_Rect rect;
+    rect.x = rect.y = 0;
+#if !defined(IOS) && !defined(ANDROID)
+    SDL_FreeSurface(screenshot_surface);
+    if(!(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP)){
+        rect.w = device_width;
+        rect.h = device_height;
+    }else{
+        SDL_GetRendererOutputSize(renderer, &rect.w, &rect.h);
+        //space check
+        if(((float)rect.w / rect.h) != ((float)screen_width / screen_height)){
+            bool space_up = true;
+            int space_size = 0;
+            float check = (float)rect.w / screen_width;
+            if(rect.h <= screen_height * check) space_up = false;
+            
+            if(space_up){
+                float height = screen_height * check;
+                space_size = (rect.h - height) / 2;
+                rect.y = space_size;
+                rect.h -= space_size * 2;
+            }else{
+                check = (float)rect.h / screen_height;
+                float width = screen_width * check;
+                space_size = (rect.w - width) / 2;
+                rect.x = space_size;
+                rect.w -= space_size * 2;
+            }
+        }
+    }
+    screenshot_surface = AnimationInfo::alloc32bitSurface( rect.w, rect.h, texture_format ); //Size change
+#else
+    rect.w = device_width;
+    rect.h = device_height;
+#endif
+    
 #if defined(IOS)
     if(resize){
         if(space_up){
