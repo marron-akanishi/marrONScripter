@@ -1539,7 +1539,7 @@ int ONScripter::movemousecursorCommand()
     int y = script_h.readInt() * screen_ratio1 / screen_ratio2;
     x = x * screen_device_width / screen_width;
     y = y * screen_device_width / screen_width;
-    SDL_WarpMouseGlobal(x, y);
+    SDL_WarpMouseInWindow(window, x, y);
     
     return RET_CONTINUE;
 }
@@ -2248,7 +2248,7 @@ int ONScripter::getscreenshotCommand()
 
     screenshot_w = w;
     screenshot_h = h;
-    // Renderer size is device size
+
     SDL_Rect rect;
     rect.x = rect.y = 0;
 #if !defined(IOS) && !defined(ANDROID)

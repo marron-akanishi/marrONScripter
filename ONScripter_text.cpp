@@ -112,11 +112,9 @@ void ONScripter::drawGlyph( SDL_Surface *dst_surface, FontInfo *info, SDL_Color 
     if ( info->getTateyokoMode() == FontInfo::TATE_MODE && IS_ROTATION_REQUIRED(text) ) rotate_flag = true;
     
     //Set surface copy start pos
-    //patched
     dst_rect.x = xy[0] + info->font_size_xy[0]/4;
-    //patched
     dst_rect.y = xy[1] + TTF_FontAscent((TTF_Font*)info->ttf_font[0]);
-    dst_rect.y -= TTF_FontHeight((TTF_Font*)info->ttf_font[0]); /// TODO:Display of character is too top
+    dst_rect.y -= TTF_FontHeight((TTF_Font*)info->ttf_font[0]); /// TODO:Display of character is too top?
 
     if ( rotate_flag ) dst_rect.x += miny - minx;
         
