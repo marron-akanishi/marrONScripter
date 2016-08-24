@@ -79,7 +79,8 @@ void ONScripter::initSDL(){
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 
 #if defined(WIN32)
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+	//SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 #else
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 #endif
@@ -861,12 +862,14 @@ void ONScripter::executeLabel()
   executeLabelTop:    
 
 	while ( current_line<current_label_info.num_of_lines ){
-		if ( debug_level > 0 )
+		if (debug_level > 0) {
 			printf("*****  executeLabel %s:%d/%d:%d:%d *****\n",
-				   current_label_info.name,
-				   current_line,
-				   current_label_info.num_of_lines,
-				   string_buffer_offset, display_mode );
+				current_label_info.name,
+				current_line,
+				current_label_info.num_of_lines,
+				string_buffer_offset, display_mode);
+			//flushDirect(screen_rect, REFRESH_NONE_MODE);
+		}
 		
 		if ( script_h.getStringBuffer()[0] == '~' ){
 			last_tilde.next_script = script_h.getNext();

@@ -219,6 +219,7 @@ public:
 	int getspsizeCommand();
 	int getspposCommand();
 	int getspmodeCommand();
+	int getskipoffCommand();
 	int getsevolCommand();
 	int getscreenshotCommand();
 	int getsavestrCommand();
