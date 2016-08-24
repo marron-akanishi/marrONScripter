@@ -963,11 +963,11 @@ int ONScripter::savescreenshotCommand()
     resizeSurface( screenshot_surface, surface );
     
     const char *buf = script_h.readStr();
-#if defined(IOS)
+/*#if defined(IOS)
     FILE *fp = ::fopen(buf, "wb");
-#else
+#else*/
     FILE *fp = fopen(buf, "wb");
-#endif
+//#endif
     SDL_RWops *rwops = SDL_RWFromFP(fp, SDL_TRUE);
     SDL_SaveBMP_RW(surface, rwops, 1);
     SDL_FreeSurface(surface);

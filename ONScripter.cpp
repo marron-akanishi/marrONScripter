@@ -127,7 +127,7 @@ void ONScripter::initSDL(){
     screen_device_width = device_width;
     screen_device_height = device_height;
 #if defined(IOS) //For space image
-    if(((float)device_width / device_height) != ((float)screen_width / screen_height))){
+    if(((float)device_width / device_height) != ((float)screen_width / screen_height)){
         printf("resize on\n");
         resize = true;
         space_up = true;
@@ -149,7 +149,10 @@ void ONScripter::initSDL(){
             printf("image size:%i\n",space_size * screen_height / device_height);
         }
         printf("space:%i\n",space_size);
-        if(space_size == 0) resize = false;
+        if(space_size == 0){
+            resize = false;
+            printf("space off\n");
+        }
     }
 #endif
     texture_format = SDL_PIXELFORMAT_ARGB8888;
