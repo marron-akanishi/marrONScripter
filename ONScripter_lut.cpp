@@ -255,6 +255,7 @@ static ONScripter::FuncLUT func_lut[] = {
     {"getspsize",		&ONScripter::getspsizeCommand},
     {"getsppos",		&ONScripter::getspposCommand},
     {"getspmode",		&ONScripter::getspmodeCommand},
+	{ "getskipoff",		&ONScripter::getskipoffCommand },
     {"getsevol",		&ONScripter::getsevolCommand},
     {"getscreenshot",	&ONScripter::getscreenshotCommand},
     {"getsavestr",		&ONScripter::getsavestrCommand},

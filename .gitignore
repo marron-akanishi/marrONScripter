@@ -2,3 +2,4 @@ Makefile.Win
 Makefile.MacOSX
 .vscode
 /marrONScripter
+*.o

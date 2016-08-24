@@ -359,13 +359,13 @@ int NSGetClick(lua_State *state)
     else
         lua_pushboolean( state, false );
 
-#if SDL_VERSION_ATLEAST(1, 2, 5)
+/*#if SDL_VERSION_ATLEAST(1, 2, 5)
     if (bs.event_button == SDL_BUTTON_WHEELUP)
         lua_pushinteger( state, 1 );
     else if (bs.event_button == SDL_BUTTON_WHEELDOWN)
         lua_pushinteger( state, -1 );
     else
-#endif
+#endif*/
         lua_pushinteger( state, 0 );
 
     if (bs.event_type == SDL_MOUSEBUTTONDOWN && bs.event_button == SDL_BUTTON_LEFT)

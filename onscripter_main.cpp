@@ -43,34 +43,32 @@ ONScripter ons;
 
 void optionHelp()
 {
-    printf( "Usage: onscripter [option ...]\n" );
-    printf( "      --cdaudio\t\tuse CD audio if available\n");
-    printf( "      --cdnumber no\tchoose the CD-ROM drive number\n");
-    printf( "  -f, --font file\tset a TTF font file\n");
-    printf( "      --registry file\tset a registry file\n");
-    printf( "      --dll file\tset a dll file\n");
-    printf( "  -r, --root path\tset the root path to the archives\n");
-    printf( "      --fullscreen\tstart in fullscreen mode\n");
-    printf( "      --window\t\tstart in windowed mode\n");
-    printf( "      --force-button-shortcut\tignore useescspc and getenter command\n");
-    printf( "      --enable-wheeldown-advance\tadvance the text on mouse wheel down\n");
-    printf( "      --disable-rescale\tdo not rescale the images in the archives\n");
-    printf( "      --render-font-outline\trender the outline of a text instead of casting a shadow\n");
-    printf( "      --edit\t\tenable online modification of the volume and variables when 'z' is pressed\n");
-    printf( "      --key-exe file\tset a file (*.EXE) that includes a key table\n");
-    printf( "  -h, --help\t\tshow this help and exit\n");
-    printf( "  -v, --version\t\tshow the version information and exit\n");
-    exit(0);
+	printf( "Usage: monster [option ...]\n" );
+	printf( "  -f, --font file\tset a TTF font file\n");
+	printf( "      --registry file\tset a registry file\n");
+	printf( "      --dll file\tset a dll file\n");
+	printf( "  -r, --root path\tset the root path to the archives\n");
+	printf( "      --fullscreen\tstart in fullscreen mode\n");
+	printf( "      --window\t\tstart in windowed mode\n");
+	printf( "      --force-button-shortcut\tignore useescspc and getenter command\n");
+	printf( "      --enable-wheeldown-advance\tadvance the text on mouse wheel down\n");
+	printf( "      --disable-rescale\tdo not rescale the images in the archives\n");
+	printf( "      --render-font-outline\trender the outline of a text instead of casting a shadow\n");
+	printf( "      --edit\t\tenable online modification of the volume and variables when 'z' is pressed\n");
+	printf( "      --key-exe file\tset a file (*.EXE) that includes a key table\n");
+	printf( "  -h, --help\t\tshow this help and exit\n");
+	printf( "  -v, --version\t\tshow the version information and exit\n");
+	exit(0);
 }
 
 void optionVersion()
 {
-    printf("Written by Ogapee <ogapee@aqua.dti2.ne.jp>\n");
-    printf("Copyright (c) 2001-2014 Ogapee.\n");
-    printf("Customized by Marron Akanishi <marron_general@gmail.com>\n");
-    printf("Copyright (c) 2016 Marron Akanishi.\n");
-    printf("This is free software; see the source for copying conditions.\n");
-    exit(0);
+	printf("Written by Ogapee <ogapee@aqua.dti2.ne.jp>\n");
+	printf("Copyright (c) 2001-2014 Ogapee.\n");
+	printf("Customized by Marron Akanishi <marron_general@gmail.com>\n");
+	printf("Copyright (c) 2016 Marron Akanishi.\n");
+	printf("This is free software; see the source for copying conditions.\n");
+	exit(0);
 }
 
 #ifdef ANDROID
@@ -102,10 +100,10 @@ JAVA_EXPORT_NAME(ONScripter_nativeGetHeight) ( JNIEnv*  env, jobject thiz )
 #if defined(IOS) && !defined(TVOS)
 extern "C" void playVideoIOS(const char *filename, bool click_flag, bool loop_flag)
 {
-    NSString *str = [[NSString alloc] initWithUTF8String:filename];
-    id obj = [MoviePlayer alloc];
-    [[obj init] play:str click:click_flag loop:loop_flag];
-    [obj release];
+	NSString *str = [[NSString alloc] initWithUTF8String:filename];
+	id obj = [MoviePlayer alloc];
+	[[obj init] play:str click:click_flag loop:loop_flag];
+	[obj release];
 }
 #endif
 
@@ -115,144 +113,144 @@ int SDL_main( int argc, char **argv )
 int main( int argc, char **argv )
 #endif
 {
-    printf("marrONScripter version %s(%d.%02d)\n", ONS_VERSION, NSC_VERSION/100, NSC_VERSION%100 );
+	printf("marrONScripter version %s(%d.%02d)\n", ONS_VERSION, NSC_VERSION/100, NSC_VERSION%100 );
 
 
 #if defined(ANDROID) 
-    ons.enableButtonShortCut();
+	ons.enableButtonShortCut();
 #endif
 
 #if defined(IOS)
 #if defined(HAVE_CONTENTS)
-    if ([[[DataCopier alloc] init] copy]) exit(-1);
+	if ([[[DataCopier alloc] init] copy]) exit(-1);
 #endif
 
-    // scripts and archives are stored under /Library/Caches
-    NSArray* cpaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString* cpath = [[cpaths objectAtIndex:0] stringByAppendingPathComponent:@"ONS"];
-    char filename[256];
-    strcpy(filename, [cpath UTF8String]);
-    ons.setArchivePath(filename);
+	// scripts and archives are stored under /Library/Caches
+	NSArray* cpaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+	NSString* cpath = [[cpaths objectAtIndex:0] stringByAppendingPathComponent:@"ONS"];
+	char filename[256];
+	strcpy(filename, [cpath UTF8String]);
+	ons.setArchivePath(filename);
 
-    // output files are stored under /Documents
-    NSArray* dpaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString* dpath = [[dpaths objectAtIndex:0] stringByAppendingPathComponent:@"ONS"];
-    strcpy(filename, [dpath UTF8String]);
-    ons.setSaveDir(filename);
+	// output files are stored under /Documents
+	NSArray* dpaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString* dpath = [[dpaths objectAtIndex:0] stringByAppendingPathComponent:@"ONS"];
+	strcpy(filename, [dpath UTF8String]);
+	ons.setSaveDir(filename);
 
 #if defined(ZIP_URL)
-    if ([[[DataDownloader alloc] init] download]) exit(-1);
+	if ([[[DataDownloader alloc] init] download]) exit(-1);
 #endif
 
 #if defined(USE_SELECTOR)
-    // scripts and archives are stored under /Library/Caches
-    cpath = [[[ScriptSelector alloc] initWithStyle:UITableViewStylePlain] select];
-    strcpy(filename, [cpath UTF8String]);
-    ons.setArchivePath(filename);
+	// scripts and archives are stored under /Library/Caches
+	cpath = [[[ScriptSelector alloc] initWithStyle:UITableViewStylePlain] select];
+	strcpy(filename, [cpath UTF8String]);
+	ons.setArchivePath(filename);
 
-    // output files are stored under /Documents
-    dpath = [[dpaths objectAtIndex:0] stringByAppendingPathComponent:[cpath lastPathComponent]];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    [fm createDirectoryAtPath:dpath withIntermediateDirectories: YES attributes: nil error:nil];
-    strcpy(filename, [dpath UTF8String]);
-    ons.setSaveDir(filename);
+	// output files are stored under /Documents
+	dpath = [[dpaths objectAtIndex:0] stringByAppendingPathComponent:[cpath lastPathComponent]];
+	NSFileManager *fm = [NSFileManager defaultManager];
+	[fm createDirectoryAtPath:dpath withIntermediateDirectories: YES attributes: nil error:nil];
+	strcpy(filename, [dpath UTF8String]);
+	ons.setSaveDir(filename);
 #endif
 
 #if defined(RENDER_FONT_OUTLINE)
-    ons.renderFontOutline();
+	ons.renderFontOutline();
 #endif
 #endif //IOS
 
-    // ----------------------------------------
-    // Parse options
-    argv++;
-    while( argc > 1 ){
-        if ( argv[0][0] == '-' ){
-            if ( !strcmp( argv[0]+1, "h" ) || !strcmp( argv[0]+1, "-help" ) ){
-                optionHelp();
-            }
-            else if ( !strcmp( argv[0]+1, "v" ) || !strcmp( argv[0]+1, "-version" ) ){
-                optionVersion();
-            }
-            else if ( !strcmp( argv[0]+1, "-cdaudio" ) ){
-                ons.enableCDAudio();
-            }
-            else if ( !strcmp( argv[0]+1, "-cdnumber" ) ){
-                argc--;
-                argv++;
-                ons.setCDNumber(atoi(argv[0]));
-            }
-            else if ( !strcmp( argv[0]+1, "f" ) || !strcmp( argv[0]+1, "-font" ) ){
-                argc--;
-                argv++;
-                ons.setFontFile(argv[0]);
-            }
-            else if ( !strcmp( argv[0]+1, "-registry" ) ){
-                argc--;
-                argv++;
-                ons.setRegistryFile(argv[0]);
-            }
-            else if ( !strcmp( argv[0]+1, "-dll" ) ){
-                argc--;
-                argv++;
-                ons.setDLLFile(argv[0]);
-            }
-            else if ( !strcmp( argv[0]+1, "r" ) || !strcmp( argv[0]+1, "-root" ) ){
-                argc--;
-                argv++;
-                ons.setArchivePath(argv[0]);
-            }
-            else if ( !strcmp( argv[0]+1, "-fullscreen" ) ){
-                ons.setFullscreenMode();
-            }
-            else if ( !strcmp( argv[0]+1, "-window" ) ){
-                ons.setWindowMode();
-            }
-            else if ( !strcmp( argv[0]+1, "-force-button-shortcut" ) ){
-                ons.enableButtonShortCut();
-            }
-            else if ( !strcmp( argv[0]+1, "-enable-wheeldown-advance" ) ){
-                ons.enableWheelDownAdvance();
-            }
-            else if ( !strcmp( argv[0]+1, "-disable-rescale" ) ){
-                ons.disableRescale();
-            }
-            else if ( !strcmp( argv[0]+1, "-render-font-outline" ) ){
-                ons.renderFontOutline();
-            }
-            else if ( !strcmp( argv[0]+1, "-edit" ) ){
-                ons.enableEdit();
-            }
-            else if ( !strcmp( argv[0]+1, "-key-exe" ) ){
-                argc--;
-                argv++;
-                ons.setKeyEXE(argv[0]);
-            }
+	// ----------------------------------------
+	// Parse options
+	argv++;
+	while( argc > 1 ){
+		if ( argv[0][0] == '-' ){
+			if ( !strcmp( argv[0]+1, "h" ) || !strcmp( argv[0]+1, "-help" ) ){
+				optionHelp();
+			}
+			else if ( !strcmp( argv[0]+1, "v" ) || !strcmp( argv[0]+1, "-version" ) ){
+				optionVersion();
+			}
+			else if ( !strcmp( argv[0]+1, "-cdaudio" ) ){
+				ons.enableCDAudio();
+			}
+			else if ( !strcmp( argv[0]+1, "-cdnumber" ) ){
+				argc--;
+				argv++;
+				ons.setCDNumber(atoi(argv[0]));
+			}
+			else if ( !strcmp( argv[0]+1, "f" ) || !strcmp( argv[0]+1, "-font" ) ){
+				argc--;
+				argv++;
+				ons.setFontFile(argv[0]);
+			}
+			else if ( !strcmp( argv[0]+1, "-registry" ) ){
+				argc--;
+				argv++;
+				ons.setRegistryFile(argv[0]);
+			}
+			else if ( !strcmp( argv[0]+1, "-dll" ) ){
+				argc--;
+				argv++;
+				ons.setDLLFile(argv[0]);
+			}
+			else if ( !strcmp( argv[0]+1, "r" ) || !strcmp( argv[0]+1, "-root" ) ){
+				argc--;
+				argv++;
+				ons.setArchivePath(argv[0]);
+			}
+			else if ( !strcmp( argv[0]+1, "-fullscreen" ) ){
+				ons.setFullscreenMode();
+			}
+			else if ( !strcmp( argv[0]+1, "-window" ) ){
+				ons.setWindowMode();
+			}
+			else if ( !strcmp( argv[0]+1, "-force-button-shortcut" ) ){
+				ons.enableButtonShortCut();
+			}
+			else if ( !strcmp( argv[0]+1, "-enable-wheeldown-advance" ) ){
+				ons.enableWheelDownAdvance();
+			}
+			else if ( !strcmp( argv[0]+1, "-disable-rescale" ) ){
+				ons.disableRescale();
+			}
+			else if ( !strcmp( argv[0]+1, "-render-font-outline" ) ){
+				ons.renderFontOutline();
+			}
+			else if ( !strcmp( argv[0]+1, "-edit" ) ){
+				ons.enableEdit();
+			}
+			else if ( !strcmp( argv[0]+1, "-key-exe" ) ){
+				argc--;
+				argv++;
+				ons.setKeyEXE(argv[0]);
+			}
 #if defined(ANDROID) 
-            else if ( !strcmp( argv[0]+1, "-open-only" ) ){
-                argc--;
-                argv++;
-                if (ons.openScript()) exit(-1);
-                return 0;
-            }
+			else if ( !strcmp( argv[0]+1, "-open-only" ) ){
+				argc--;
+				argv++;
+				if (ons.openScript()) exit(-1);
+				return 0;
+			}
 #endif
-            else{
-                printf(" unknown option %s\n", argv[0] );
-            }
-        }
-        else{
-            optionHelp();
-        }
-        argc--;
-        argv++;
-    }
-    
-    // ----------------------------------------
-    // Run ONScripter
+			else{
+				printf(" unknown option %s\n", argv[0] );
+			}
+		}
+		else{
+			optionHelp();
+		}
+		argc--;
+		argv++;
+	}
+	
+	// ----------------------------------------
+	// Run ONScripter
 
-    if (ons.openScript()) exit(-1);
-    if (ons.init()) exit(-1);
-    ons.executeLabel();
-    
-    exit(0);
+	if (ons.openScript()) exit(-1);
+	if (ons.init()) exit(-1);
+	ons.executeLabel();
+	
+	exit(0);
 }
