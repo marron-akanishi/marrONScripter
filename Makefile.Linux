@@ -62,7 +62,7 @@ LIBS += -logg -lvorbis -lvorbisfile
 
 # for GNU g++
 CC = g++ 
-LD = g++ -static -o
+LD = g++ -o
 
 #CFLAGS = -g -Wall -pipe -c $(INCS) $(DEFS)
 CFLAGS = -O3 -Wall -fomit-frame-pointer -pipe -std=c++11 -c $(INCS) $(DEFS)
