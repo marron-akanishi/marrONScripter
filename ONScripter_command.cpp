@@ -1571,6 +1571,7 @@ int ONScripter::menu_windowCommand()
 	if ( fullscreen_mode ){
 		if ( SDL_SetWindowFullscreen(window, 0) == 0 ){
 			fullscreen_mode = false;
+            SDL_WarpMouseInWindow(window, 1, 1);
 		}
 	}
 
@@ -1583,6 +1584,7 @@ int ONScripter::menu_fullCommand()
 	if ( !fullscreen_mode ){
 		if ( SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP) == 0 ){
 			fullscreen_mode = true;
+            SDL_WarpMouseInWindow(window, 1, 1);
 		}
 	}
 #endif

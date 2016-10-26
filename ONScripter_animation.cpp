@@ -212,7 +212,7 @@ void ONScripter::setupAnimationInfo( AnimationInfo *anim, FontInfo *info )
             info->xy[1] = f_info.xy[1];
         }
         
-        anim->orig_pos.w = pos.w;
+        anim->orig_pos.w = pos.w + 10; //TODO:Why?
         anim->orig_pos.h = pos.h;
         anim->scalePosWH( screen_ratio1, screen_ratio2 );
         anim->allocImage( anim->pos.w*anim->num_of_cells, anim->pos.h, texture_format );

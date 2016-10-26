@@ -184,7 +184,7 @@ void ONScripter::initSDL(){
 }
 
 void ONScripter::openAudio(){
-	if ( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, DEFAULT_AUDIOBUF ) < 0 ){      
+	if ( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, DEFAULT_AUDIOBUF ) < 0 ){
 		fprintf(stderr, "Couldn't open audio device!: %s\n", SDL_GetError());
 		audio_open_flag = false;
 	}else{
@@ -643,7 +643,7 @@ void ONScripter::resetSentenceFont()
 	sentence_font.font_size_xy[0] = DEFAULT_FONT_SIZE;
 	sentence_font.font_size_xy[1] = DEFAULT_FONT_SIZE;
 	sentence_font.top_xy[0] = 21;
-	sentence_font.top_xy[1] = 16;// + sentence_font.font_size;
+	sentence_font.top_xy[1] = 16;
 	sentence_font.num_xy[0] = 23;
 	sentence_font.num_xy[1] = 16;
 	sentence_font.pitch_xy[0] = sentence_font.font_size_xy[0];

@@ -114,6 +114,7 @@ int main( int argc, char **argv )
 #endif
 {
 	printf("marrONScripter version %s(%d.%02d)\n", ONS_VERSION, NSC_VERSION/100, NSC_VERSION%100 );
+    printf("SDL version %d.%d.%d\n",SDL_MAJOR_VERSION,SDL_MINOR_VERSION,SDL_PATCHLEVEL);
 
 
 #if defined(ANDROID) 

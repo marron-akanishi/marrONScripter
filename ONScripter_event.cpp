@@ -661,13 +661,13 @@ bool ONScripter::keyDownEvent( SDL_KeyboardEvent *event )
 		current_button_state.event_type = SDL_MOUSEBUTTONDOWN;
 		current_button_state.event_button = SDL_BUTTON_LEFT;
 	}
-	else if (event->keysym.sym == SDLK_LEFT){
+	else if (event->keysym.sym == SDLK_UP){
 		SDL_MouseWheelEvent w_event;
 		w_event.y = 10;
 		w_event.direction = SDL_MOUSEWHEEL_NORMAL;
 		mouseWheelEvent( &w_event );
 	}
-	else if (event->keysym.sym == SDLK_RIGHT){
+	else if (event->keysym.sym == SDLK_DOWN){
 		SDL_MouseWheelEvent w_event;
 		w_event.y = -10;
 		w_event.direction = SDL_MOUSEWHEEL_NORMAL;
@@ -713,13 +713,13 @@ void ONScripter::keyUpEvent( SDL_KeyboardEvent *event )
 		current_button_state.event_type = SDL_MOUSEBUTTONUP;
 		current_button_state.event_button = SDL_BUTTON_LEFT;
 	}
-	else if (event->keysym.sym == SDLK_LEFT){
+	else if (event->keysym.sym == SDLK_UP){
 		SDL_MouseWheelEvent w_event;
 		w_event.y = 10;
 		w_event.direction = SDL_MOUSEWHEEL_NORMAL;
 		mouseWheelEvent( &w_event );
 	}
-	else if (event->keysym.sym == SDLK_RIGHT){
+	else if (event->keysym.sym == SDLK_DOWN){
 		SDL_MouseWheelEvent w_event;
 		w_event.y = -10;
 		w_event.direction = SDL_MOUSEWHEEL_NORMAL;
@@ -850,7 +850,7 @@ bool ONScripter::keyPressEvent( SDL_KeyboardEvent *event )
 		else if ( !spclclk_flag && useescspc_flag && event->keysym.sym == SDLK_SPACE ){
 			current_button_state.button  = -11;
 		}
-		else if (((!getcursor_flag && event->keysym.sym == SDLK_LEFT) ||
+		else if (((!getcursor_flag && event->keysym.sym == SDLK_UP) ||
 				  event->keysym.sym == SDLK_h) &&
 				 (event_mode & WAIT_TEXT_MODE ||
 				  (usewheel_flag && !getcursor_flag && event_mode & WAIT_BUTTON_MODE) || 
@@ -858,7 +858,7 @@ bool ONScripter::keyPressEvent( SDL_KeyboardEvent *event )
 			current_button_state.button = -2;
 			if (event_mode & WAIT_TEXT_MODE) system_menu_mode = SYSTEM_LOOKBACK;
 		}
-		else if (((!getcursor_flag && event->keysym.sym == SDLK_RIGHT) ||
+		else if (((!getcursor_flag && event->keysym.sym == SDLK_DOWN) ||
 				  event->keysym.sym == SDLK_l) &&
 				 ((enable_wheeldown_advance_flag && event_mode & WAIT_TEXT_MODE) ||
 				  (usewheel_flag && event_mode & WAIT_BUTTON_MODE) || 
@@ -868,14 +868,14 @@ bool ONScripter::keyPressEvent( SDL_KeyboardEvent *event )
 			else
 				current_button_state.button = -3;
 		}
-		else if (((!getcursor_flag && event->keysym.sym == SDLK_UP) ||
+		else if (((!getcursor_flag && event->keysym.sym == SDLK_LEFT) ||
 				  event->keysym.sym == SDLK_k ||
 				  event->keysym.sym == SDLK_p) &&
 				 event_mode & WAIT_BUTTON_MODE){
 			shiftCursorOnButton(1);
 			return false;
 		}
-		else if (((!getcursor_flag && event->keysym.sym == SDLK_DOWN) ||
+		else if (((!getcursor_flag && event->keysym.sym == SDLK_RIGHT) ||
 				  event->keysym.sym == SDLK_j ||
 				  event->keysym.sym == SDLK_n) &&
 				 event_mode & WAIT_BUTTON_MODE){
